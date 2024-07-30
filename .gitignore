@@ -1,0 +1,144 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+# Only exists if Bazel was run
+/bazel-out
+
+# dependencies
+
+/servless-api/python/package
+/servless-api/python/**/package/
+/servless-api/python/**/package
+/servless-api/python/__pycache__
+/servless-api/python/**/__pycache__/
+/servless-api/python/**/__pycache__
+/servless-api/python/*.zip
+/node_modules
+**/node_modules
+
+/cache
+**/cache
+
+# Ignore angular files
+.**/angular
+
+# Ignore zip files
+**/*.zip
+**/.zip
+.**/.zip
+/.zip
+*/.zip/
+*/.zip/*
+
+
+# Ignore zip files
+**/*.__pycache__
+**/.__pycache__
+.**/.__pycache__
+/.__pycache__
+*/.__pycache__/
+*/.__pycache__/*
+
+# Ignore pyc files
+**/*.pyc
+**/.pyc
+.**/.pyc
+/.pyc
+*/.pyc/
+*/.pyc/*
+
+# Ignore webpack files
+**/*.webpack
+**/.webpack
+.**/.webpack
+/.webpack
+*/.webpack/
+*/.webpack/*
+
+.
+
+# Ignore dist files
+**/dist
+.**/dist
+/dist
+*/dist/
+*/dist/*
+
+# Ignore mvn files
+.**/mvn
+
+# profiling files
+chrome-profiler-events*.json
+speed-measure-plugin*.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+.angular
+
+# System Files
+.DS_Store
+Thumbs.db
+/callnodewithproxy.bat
+
+.lidea/
+*.iml
+*/target/
+*/project/target/
+*/project/project/
+*/nb-configuration.xml
+*/node_modules/
+*/.sourcemaps/
+*/typings/
+*/bower_components/
+*.map
+*/nbactions.xml
+.tmp/
+.vscode/
+.ionide/
+.idea/
+node/
+/nodeInstall
+*/*.log
+/target/
+/app-web/coverage
+applicationinsights.log
+local.appconfig.overrides
+.mvn/wrapper/*.jar
+application.pid
+.gradle
+.factorypath
+.classpath
+.project
+.settings/
+*.iws
+
+# Serverless Deployment Data
+.serverless/
+frontend/test-results/
