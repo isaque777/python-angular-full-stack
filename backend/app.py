@@ -9,7 +9,6 @@ from bson import ObjectId, json_util
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 from pymongo import ASCENDING, MongoClient
 
 from db import (
@@ -63,7 +62,7 @@ app.add_event_handler("startup", startup_event)
 app.add_event_handler("shutdown", shutdown_event)
 
 
-class CourseData(BaseModel):
+class CourseData:
     University: str
     City: str
     Country: str
