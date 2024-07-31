@@ -42,7 +42,7 @@ def start_infinite_threads():
             thread_id += 1
             # Optional: sleep to simulate some delay
             print("Waiting for TTL expiration...")
-            time.sleep(60000)
+            time.sleep(610)
 
 
 def initial_data():
