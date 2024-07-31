@@ -1,17 +1,9 @@
 import json
-import math
-from datetime import datetime
-from typing import Dict, Optional
 
-import mongomock
-import uvicorn
-from bson import ObjectId, json_util
-from fastapi import FastAPI, HTTPException, Query
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from bson import json_util
 from pydantic import BaseModel
-from pymongo import ASCENDING, MongoClient
-
 
 from db import (
     create_course,
@@ -24,6 +16,21 @@ from db import (
 )
 from filereader import data_factory
 from processdata import start_process
+
+app = Flask(__name__)
+CORS(app)
+
+
+class CourseData(BaseModel):
+    University: str
+    City: str
+    Country: str
+    CourseName: str
+    CourseDescription: str
+    Currency: str
+    StartDate: str
+    EndDate: str
+    Price: float
 
 
 def startup_event():
@@ -47,97 +54,70 @@ def shutdown_event():
     print("Application shutdown")
 
 
-app = FastAPI()
-
-origins = ["*"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Register the startup and shutdown events
-app.add_event_handler("startup", startup_event)
-app.add_event_handler("shutdown", shutdown_event)
+# @app.before_first_request
+# def before_first_request():
+#     startup_event()
 
 
-class CourseData(BaseModel):
-    University: str
-    City: str
-    Country: str
-    CourseName: str
-    CourseDescription: str
-    Currency: str
-    StartDate: str
-    EndDate: str
-    Price: float
+# @app.teardown_appcontext
+# def teardown_appcontext(exception):
+#     shutdown_event()
 
 
-@app.get("/courses/autocomplete")
-async def autocomplete(
-    q: Optional[str] = Query("", alias="q", description="Name to filter categories"),
-    type: Optional[str] = Query(
-        "", alias="type", description="Type of categories to filter"
-    ),
-):
-    """Get category mappings for specified columns."""
+@app.route("/courses/autocomplete", methods=["GET"])
+def autocomplete():
+    q = request.args.get("q", "")
+    type = request.args.get("type", "")
     categories = get_categories_aggr(q, type)
     categories_list = list(categories)
     categories_json = json.loads(json_util.dumps(categories_list))
-    return JSONResponse(content=categories_json, status_code=200)
+    return jsonify(categories_json), 200
 
 
-@app.post("/courses")
-async def create(course_data: CourseData):
-    """Insert new course into the collection."""
-    inserted_id = create_course(course_data.dict())
-    return JSONResponse(content={"inserted_id": str(inserted_id)}, status_code=201)
+@app.route("/courses", methods=["POST"])
+def create():
+    course_data = request.json
+    course_data_obj = CourseData(**course_data)
+    inserted_id = create_course(course_data_obj.dict())
+    return jsonify({"inserted_id": str(inserted_id)}), 201
 
 
-@app.get("/courses")
-async def find(
-    page: int = Query(1, alias="page"),
-    page_size: int = Query(10, alias="page_size"),
-    q: Optional[str] = Query(
-        "", alias="q", description="University name to filter categories"
-    ),
-):
-    """Get courses with pagination."""
+@app.route("/courses", methods=["GET"])
+def find():
+    page = int(request.args.get("page", 1))
+    page_size = int(request.args.get("page_size", 10))
+    q = request.args.get("q", "")
     courses_cursor = get_courses_paginated(page, page_size, q)
-    # courses_list = list(courses_cursor)
     courses_json = json.loads(json_util.dumps(courses_cursor))
-    return JSONResponse(content=courses_json, status_code=200)
+    return jsonify(courses_json), 200
 
 
-@app.put("/courses/{course_id}")
-async def update(course_id: str, update: Dict):
-    """Update a course."""
+@app.route("/courses/<course_id>", methods=["PUT"])
+def update(course_id):
+    update = request.json
     update_course(course_id, update)
-    return JSONResponse(content={"modified_count": course_id}, status_code=200)
+    return jsonify({"modified_count": course_id}), 200
 
 
-@app.delete("/courses/{course_id}")
-async def delete(course_id: str):
-    """Delete a course."""
+@app.route("/courses/<course_id>", methods=["DELETE"])
+def delete(course_id):
     deleted_count = delete_course(course_id)
-    return JSONResponse(content={"deleted_count": deleted_count}, status_code=200)
+    return jsonify({"deleted_count": deleted_count}), 200
 
 
-@app.get("/courses/{course_id}")
-async def get(course_id: str):
-    """API endpoint to get a course by its ID."""
+@app.route("/courses/<course_id>", methods=["GET"])
+def get(course_id):
     try:
         course = get_course(course_id)
         courses_json = json.loads(json_util.dumps(course))
-        return JSONResponse(content=courses_json, status_code=200)
+        return jsonify(courses_json), 200
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except HTTPException as e:
-        raise e
+        return jsonify({"detail": str(e)}), 400
+    except Exception as e:
+        return jsonify({"detail": str(e)}), 500
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    startup_event()
+    shutdown_event()
+    app.run(host="0.0.0.0", port=8000)
