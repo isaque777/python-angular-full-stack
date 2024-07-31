@@ -5,7 +5,7 @@ import { Course } from 'src/app/model/course';
 import { PaginatedCourse } from '../model/paginated-course';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CourseService {
   private baseUrl = 'http://localhost:8000/courses'; // Adjust to match your API endpoint
@@ -32,7 +32,9 @@ export class CourseService {
    * @returns An observable with the list of courses.
    */
   getCourses(page: number, pageSize: number): Observable<PaginatedCourse> {
-    return this.http.get<PaginatedCourse>(`${this.baseUrl}?page=${page}&page_size=${pageSize}`);
+    return this.http.get<PaginatedCourse>(
+      `${this.baseUrl}?page=${page}&page_size=${pageSize}`
+    );
   }
 
   /**
@@ -42,7 +44,9 @@ export class CourseService {
    * @returns An observable with the response containing the number of modified documents.
    */
   updateCourse(courseId: string, updateData: Partial<Course>): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${courseId}`, updateData, { headers: this.headers });
+    return this.http.put(`${this.baseUrl}/${courseId}`, updateData, {
+      headers: this.headers,
+    });
   }
 
   /**
@@ -60,7 +64,6 @@ export class CourseService {
     return this.http.get<Course>(url);
   }
 
-
   /**
    * Get autocomplete suggestions for courses based on query and type.
    * @param query The search query string.
@@ -68,10 +71,8 @@ export class CourseService {
    * @returns Observable containing the list of suggestions.
    */
   getAutocompleteSuggestions(query: string, type: string): Observable<any> {
-    const params = new HttpParams()
-      .set('q', query)
-      .set('type', type);
+    const params = new HttpParams().set('q', query).set('type', type);
 
-    return this.http.get<any>(this.baseUrl, { params });
+    return this.http.get<any>(`${this.baseUrl}/autocomplete`, { params });
   }
 }
