@@ -1,4 +1,5 @@
 import json
+import re
 import math
 from datetime import datetime
 
@@ -11,7 +12,6 @@ from pymongo import ASCENDING, MongoClient
 client = mongomock.MongoClient()
 db = client["test_db"]
 collection = db["course"]
-categories = db["categories"]
 categories_data = {}
 
 
@@ -58,11 +58,6 @@ def get_courses():
     return collection
 
 
-def get_categories():
-    """Get all categories in the collection."""
-    return categories.find()
-
-
 def get_categories_aggr(q, type):
     """Get all categories in the collection."""
 
@@ -76,7 +71,7 @@ def get_categories_aggr(q, type):
     return collection.aggregate(pipeline)
 
 
-def get_courses_paginated(page, page_size):
+def get_courses_paginated(page, page_size, q):
     """Query and print courses in the collection with pagination, including total items and total pages."""
 
     # Count total items in the collection
@@ -85,8 +80,25 @@ def get_courses_paginated(page, page_size):
     # Calculate the number of documents to skip
     skip = (page - 1) * page_size
 
+    payload = {}
+
+    if q:
+        # Create a regex pattern for case-insensitive search
+        regex_pattern = re.compile(q, re.IGNORECASE)
+
+        # Construct the payload for MongoDB query
+        payload = {
+            "$or": [
+                {"University": {"$regex": regex_pattern}},
+                {"City": {"$regex": regex_pattern}},
+                {"Country": {"$regex": regex_pattern}},
+                {"CourseName": {"$regex": regex_pattern}},
+                {"CourseDescription": {"$regex": regex_pattern}},
+            ]
+        }
+
     # Fetch the paginated results
-    courses = collection.find().skip(skip).limit(page_size)
+    courses = collection.find(payload).skip(skip).limit(page_size)
 
     # Calculate total pages
     total_pages = math.ceil(total_items / page_size)

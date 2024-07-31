@@ -1,11 +1,14 @@
 <div class="demo-button-container" *ngIf="dataSource">
+
   <button mat-raised-button (click)="openDialog(null)" class="demo-button">
     Add data
   </button>
-  <!-- [disabled]="!dataSource.length" -->
-  <button mat-raised-button (click)="removeData()" class="demo-button">
-    Remove data
-  </button>
+
+
+  <mat-form-field class="search-field">
+    <mat-label>Search</mat-label>
+    <input matInput [(ngModel)]="q" placeholder="Search" (keydown)="onSearch()">
+  </mat-form-field>
 </div>
 
 <div>
@@ -19,7 +22,8 @@
   <!-- Course Name Column -->
   <ng-container matColumnDef="CourseName">
     <th mat-header-cell *matHeaderCellDef> Course Name </th>
-    <td mat-cell *matCellDef="let element"> {{element.CourseName}} </td>
+    <td mat-cell *matCellDef="let element" matTooltip="{{element.CourseDescription}}" matTooltipPosition="right">
+      {{element.CourseName}} </td>
   </ng-container>
 
   <!-- Location Column -->

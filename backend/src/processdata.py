@@ -21,25 +21,9 @@ def check_data_base(thread_id):
 
     print(f"Size of courses: {size}")
 
-    if size < 1000:
+    if size > 1:
         expired = False
         print("Data found in MongoDB. No need to process the CSV file.")
-
-        # # Update a document
-        # update_document(collection, {"University": ""}})
-
-        # Query and print all documents after update
-        # print("\nDocuments after update:")
-        # query_collection(collection)
-
-        # Delete a document
-        # delete_document(collection, {"University": ""})
-
-        # Query and print all documents after deletion
-        # print("\nDocuments after deletion:")
-        # query_collection(collection)
-
-        # Wait for TTL expiration (e.g., 11 minutes to be sure)
 
     if expired:
         initial_data()

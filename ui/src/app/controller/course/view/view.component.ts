@@ -18,12 +18,7 @@ import { CourseDeleteComponent } from './delete/delete.component';
   styleUrls: ['./view.component.css'],
 })
 export class CourseViewComponent implements AfterViewInit {
-  openDialogDelete(data: any) {
-    this.dialog.open(CourseDeleteComponent, {
-      data,
-      width: '250px',
-    });
-  }
+  q: string = '';
   length = 50;
   pageSize = 10;
   pageIndex = 0;
@@ -61,7 +56,8 @@ export class CourseViewComponent implements AfterViewInit {
         switchMap(() =>
           this.courseService.find(
             this.paginator.pageIndex,
-            this.paginator.pageSize
+            this.paginator.pageSize,
+            this.q
           )
         ),
         map((data) => {
@@ -104,9 +100,9 @@ export class CourseViewComponent implements AfterViewInit {
     }
   }
 
-  removeData() {
-    // this.dataSource.pop();
-    // this.table.renderRows();
+  onSearch(): void {
+    console.log('Search term:', this.q);
+    this.loadPaginatedData();
   }
 
   // Transform data for display
@@ -120,6 +116,7 @@ export class CourseViewComponent implements AfterViewInit {
 
       return {
         CourseName: course.CourseName,
+        CourseDescription: course.CourseDescription,
         Location: `${course.Country}, ${course.City}, ${course.University}`,
         StartDate: startDate.toDate(),
         Length: `${durationLength}`,
@@ -129,5 +126,18 @@ export class CourseViewComponent implements AfterViewInit {
       };
     });
   }
-}
 
+  openDialogDelete(data: any) {
+    const dialogRef = this.dialog.open(CourseDeleteComponent, {
+      data,
+      width: '250px',
+    });
+    dialogRef.afterClosed().subscribe({
+      next: (val) => {
+        if (val) {
+          this.loadPaginatedData();
+        }
+      },
+    });
+  }
+}

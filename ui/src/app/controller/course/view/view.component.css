@@ -9,3 +9,18 @@
 .demo-button + .demo-button {
   margin-left: 8px;
 }
+
+.demo-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-field {
+  margin-right: 16px;
+  margin-left: 8px;
+  width: 300px;
+}
+
+.demo-button {
+
+}

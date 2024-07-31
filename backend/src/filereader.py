@@ -68,9 +68,6 @@ def data_factory():
     # Step 3: Normalize the 'Price' column
     df = normalize_price(df)
 
-    # Step 4: Convert text columns to categorical codes
-    # df, categories = convert_text_columns(df)
-
     # Display the processed DataFrame
     display_dataframe(df)
 

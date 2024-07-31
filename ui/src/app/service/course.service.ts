@@ -29,11 +29,12 @@ export class CourseService {
    * Get courses with pagination.
    * @param page The page number for pagination.
    * @param pageSize The number of courses per page.
+   * @param q Search Query.
    * @returns An observable with the list of courses.
    */
-  find(page: number, pageSize: number): Observable<PaginatedCourse> {
+  find(page: number, pageSize: number, q: string): Observable<PaginatedCourse> {
     return this.http.get<PaginatedCourse>(
-      `${this.baseUrl}?page=${page}&page_size=${pageSize}`
+      `${this.baseUrl}?page=${page}&page_size=${pageSize}&q=${q}`
     );
   }
 
