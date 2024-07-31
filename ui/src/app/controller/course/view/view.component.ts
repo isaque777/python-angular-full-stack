@@ -65,7 +65,7 @@ export class CourseViewComponent implements AfterViewInit {
       )
       .subscribe((items) => {
         this.transformedData = items;
-        this.dataSource.data = this.transformedData;
+        this.dataSource = new MatTableDataSource(this.transformedData);
       });
   }
 
@@ -115,13 +115,13 @@ export class CourseViewComponent implements AfterViewInit {
       const endDate = moment((<any>course.EndDate)['$date']);
 
       const duration = moment.duration(endDate.diff(startDate));
-      const length = duration.asDays();
+      const durationLength = duration.asDays();
 
       return {
         CourseName: course.CourseName,
         Location: `${course.Country}, ${course.City}, ${course.University}`,
         StartDate: startDate.toDate(),
-        Length: `${length}`,
+        Length: `${durationLength}`,
         Currency: `${course.Currency}`,
         Cost: `${course.Price.toFixed(2)}`,
         id: (<any>course)['_id'].$oid,

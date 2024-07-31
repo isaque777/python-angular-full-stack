@@ -1,10 +1,12 @@
-import mongomock
-from bson import ObjectId
-from pymongo import MongoClient
-from pymongo import ASCENDING
-from datetime import datetime
-import pandas as pd
+import json
 import math
+from datetime import datetime
+
+from fastapi import HTTPException, status
+import mongomock
+import pandas as pd
+from bson import ObjectId, json_util
+from pymongo import ASCENDING, MongoClient
 
 client = mongomock.MongoClient()
 db = client["test_db"]
@@ -33,18 +35,6 @@ def create_courses_and_categories(df):
         record["createdAt"] = current_time
 
     collection.insert_many(df_dict)
-
-    # Convert data to DataFrame
-    # df = pd.DataFrame(cat_df)
-
-    #  Join Country, City, and University into Location
-    # df["Location"] = df[["Country", "City", "University"]].agg(", ".join, axis=1)
-
-    # Convert DataFrame to a list of dictionaries
-    # data_to_insert = df.to_dict(orient="records")
-
-    # Insert data into MongoDB
-    # categories.insert_many(data_to_insert)
 
     print("Data inserted successfully")
 
@@ -112,9 +102,26 @@ def get_courses_paginated(page, page_size):
     }
 
 
-def update_course(filter, update):
-    """Update a document in the collection."""
-    collection.update_one(filter, update)
+def update_course(id, update):
+    """
+    Update an item in the collection using a JSON object.
+
+    :param json_data: JSON string containing the update data
+    :return: The updated document
+    """
+
+    # Update the document
+    update_result = collection.update_one({"_id": ObjectId(id)}, {"$set": update})
+
+    if update_result.modified_count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Course with ID {id} not found",
+        )
+
+    print("Data updated successfully")
+    print("updated_document")
+    print(update_result)
 
 
 def delete_course(filter):

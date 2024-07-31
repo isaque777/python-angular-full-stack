@@ -9,6 +9,12 @@
   </button>
 </div>
 
+<div>
+  <p>Page Length: {{length}}</p>
+  <p>Page Size: {{pageSize}}</p>
+  <p>Page Index: {{pageIndex}}</p>
+</div>
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
 
   <!-- Course Name Column -->
@@ -63,11 +69,6 @@
                  showFirstLastButtons
                  aria-label="Select page of periodic elements">
   </mat-paginator> -->
-<mat-paginator #paginator class="demo-paginator" (page)="handlePageEvent($event)" [length]="length"
-  [pageSize]="pageSize" [disabled]="disabled" [showFirstLastButtons]="showFirstLastButtons"
-  [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []" [hidePageSize]="hidePageSize" [pageIndex]="pageIndex"
-  aria-label="Select page">
-</mat-paginator>
 
 <mat-menu #appMenu="matMenu">
   <ng-template matMenuContent let-id="id">
@@ -75,3 +76,9 @@
     <button mat-menu-item> <mat-icon>delete</mat-icon> Delete</button>
   </ng-template>
 </mat-menu>
+
+<mat-paginator #paginator class="demo-paginator" (page)="handlePageEvent($event)" [length]="length"
+  [pageSize]="pageSize" [disabled]="disabled" [showFirstLastButtons]="showFirstLastButtons"
+  [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []" [hidePageSize]="hidePageSize" [pageIndex]="pageIndex"
+  aria-label="Select page">
+</mat-paginator>

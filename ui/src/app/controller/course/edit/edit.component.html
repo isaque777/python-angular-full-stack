@@ -2,7 +2,8 @@
   <form [formGroup]="courseForm" novalidate (ngSubmit)="onFormSubmit()">
     <mat-dialog-actions align="end">
       <button mat-raised-button type="button" [mat-dialog-close]="false">Cancel</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="!courseForm.valid">{{data ? 'Update' :
+      <!-- <button mat-raised-button color="primary" type="submit" [disabled]="!courseForm.valid">{{data ? 'Update' : -->
+      <button mat-raised-button color="primary" type="submit" >{{data ? 'Update' :
         'Save'}}</button>
     </mat-dialog-actions>
     <div class="main-body" *ngIf="course">

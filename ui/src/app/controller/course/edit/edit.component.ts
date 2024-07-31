@@ -129,25 +129,15 @@ export class CourseEditComponent {
   ) {
     this.loadCourse(data);
 
-    // this.filteredOptions = this.myControl.valueChanges.pipe(
-    //   startWith(''),
-    //   debounceTime(400),
-    //   distinctUntilChanged(),
-    //   switchMap((val) => {
-    //     return this.filter(val || '', 'University');
-    //   })
-    // );
-
-    // Assuming _fb is your FormBuilder instance
     this.courseForm = this._fb.group({
-      CourseName: ['', [Validators.required, Validators.maxLength(20)]],
-      CourseDescription: ['', [Validators.required, Validators.maxLength(100)]],
-      University: ['', [Validators.required, Validators.maxLength(50)]],
+      CourseName: ['', [Validators.required, Validators.maxLength(50)]],
+      CourseDescription: ['', [Validators.required, Validators.maxLength(400)]],
+      University: ['', [Validators.required, Validators.maxLength(200)]],
       Country: ['', [Validators.required, Validators.maxLength(50)]],
-      City: ['', [Validators.required, Validators.maxLength(50)]],
+      City: ['', [Validators.required, Validators.maxLength(100)]],
       StartDate: [null, Validators.required],
       EndDate: [null, Validators.required],
-      Currency: ['', Validators.required],
+      Currency: [''],
       Price: ['', [Validators.required, Validators.maxLength(20)]],
     });
 
@@ -178,6 +168,26 @@ export class CourseEditComponent {
     );
   }
 
+  // Trigger errors manually
+  triggerErrors(): void {
+    for (const control in this.courseForm.controls) {
+      this.courseForm.controls[control].markAsTouched();
+      this.courseForm.controls[control].updateValueAndValidity();
+    }
+  }
+
+  // Identify invalid controls
+  getInvalidControls(): string[] {
+    const invalidControls = [];
+    for (const controlName in this.courseForm.controls) {
+      const control = this.courseForm.controls[controlName];
+      if (control.invalid && (control.dirty || control.touched)) {
+        invalidControls.push(controlName);
+      }
+    }
+    return invalidControls;
+  }
+
   // Transform data for display
   transformAutoComplete(items: any[]): string[] {
     return items.map((item) => (<any>item)['_id']);
@@ -205,21 +215,26 @@ export class CourseEditComponent {
   };
 
   onFormSubmit() {
-    debugger;
-    if (this.courseForm.valid) {
-      const course = this.courseForm.value;
-      if (this.data) {
-        this._courseService.update(this.data, course).subscribe((response) => {
-          console.log('Course updated successfully', response);
-          this._dialogRef.close(true);
-        });
-      } else {
-        this._courseService.save(course).subscribe((response) => {
-          console.log('Course created successfully', response);
-          this._coreService.openSnackBar('Course added successfully');
-          this._dialogRef.close(true);
-        });
-      }
+    if (this.courseForm.invalid) {
+      this.triggerErrors();
+      const invalidControls = this.getInvalidControls();
+      console.log('Invalid controls:', invalidControls);
+      this._coreService.openSnackBar('Invalid Input for:' + invalidControls);
+      return;
+    }
+    const course = this.courseForm.value;
+    if (this.data) {
+      this._courseService.update(this.data, course).subscribe((response) => {
+        console.log('Course updated successfully', response);
+        this._coreService.openSnackBar('Course updated successfully');
+        this._dialogRef.close(true);
+      });
+    } else {
+      this._courseService.save(course).subscribe((response) => {
+        console.log('Course created successfully', response);
+        this._coreService.openSnackBar('Course added successfully');
+        this._dialogRef.close(true);
+      });
     }
   }
 

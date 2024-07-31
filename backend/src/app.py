@@ -114,8 +114,8 @@ async def find(
 @app.put("/courses/{course_id}")
 async def update(course_id: str, update: Dict):
     """Update a course."""
-    modified_count = update_course(course_id, update)
-    return JSONResponse(content={"modified_count": modified_count}, status_code=200)
+    update_course(course_id, update)
+    return JSONResponse(content={"modified_count": course_id}, status_code=200)
 
 
 @app.delete("/courses/{course_id}")
