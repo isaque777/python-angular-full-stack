@@ -59,7 +59,7 @@ def display_dataframe(df):
 
 def data_factory():
     # Step 1: Read the CSV file
-    file_path = "static/UniversitySchema.csv"
+    file_path = "UniversitySchema.csv"
     df = read_csv(file_path)
 
     # Step 2: Parse date columns
