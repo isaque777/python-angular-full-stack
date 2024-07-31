@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { CourseEditComponent } from './controller/course/edit/edit.component';
 import { CourseViewComponent } from './controller/course/view/view.component';
 import { MaterialModule } from './material.module';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -30,6 +31,7 @@ import {
     HttpClientModule,
     NoopAnimationsModule,
     BrowserAnimationsModule,
+    MatMomentDateModule,
     FormsModule,
     AppRoutingModule,
   ],

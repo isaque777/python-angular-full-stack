@@ -2,6 +2,7 @@
   padding-top: 20px;
   margin: 0 auto;
   max-width: 1348px;
+  height: auto;
 
   mat-form-field {
     width: 100%;
@@ -12,3 +13,10 @@
   display: flex;
   gap: 5px;
 }
+
+
+.mat-dialog-content {
+  max-height: 500px; /* Adjust as needed */
+  overflow: hidden;
+}
+

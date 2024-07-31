@@ -1,15 +1,26 @@
-import { Course } from 'src/app/model/course';
 import { Component } from '@angular/core';
-
-import { Inject } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+  MomentDateAdapter,
+} from '@angular/material-moment-adapter';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
+import { Course } from 'src/app/model/course';
+
+// Depending on whether rollup is used, moment needs to be imported differently.
+// Since Moment.js doesn't have a default export, we normally need to import using the `* as`
+// syntax. However, rollup creates a synthetic default module and we thus need to import it using
+// the `default as` syntax.
+import * as _moment from 'moment';
+// tslint:disable-next-line:no-duplicate-imports
+import { Inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CourseService } from 'src/app/service/course.service';
+import { default as _rollupMoment } from 'moment';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -19,11 +30,39 @@ import {
   startWith,
   switchMap,
 } from 'rxjs';
+import { CourseService } from 'src/app/service/course.service';
 
+const moment = _rollupMoment || _moment;
+
+// See the Moment.js docs for the meaning of these formats:
+// https://momentjs.com/docs/#/displaying/format/
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'YYYY/MM/DD',
+  },
+  display: {
+    dateInput: 'YYYY/MM/DD',
+    monthYearLabel: 'MMM YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+    dateA11yLabel: 'YYYY/MM/DD',
+  },
+};
 @Component({
   selector: 'app-course-edit',
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.css'],
+  providers: [
+    // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
+    // application's root module. We provide it at the component level here, due to limitations of
+    // our example generation script.
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
 export class CourseEditComponent {
   courseForm!: FormGroup;
@@ -31,7 +70,53 @@ export class CourseEditComponent {
   filteredUniversities: Observable<string[]>;
   filteredCountries: Observable<string[]>;
   filteredCities: Observable<string[]>;
-  // myControl = new FormControl();
+  currencies: { code: string }[] = [
+    { code: 'USD' },
+    { code: 'EUR' },
+    { code: 'GBP' },
+    { code: 'JPY' },
+    { code: 'AUD' },
+    { code: 'CAD' },
+    { code: 'CHF' },
+    { code: 'CNY' },
+    { code: 'SEK' },
+    { code: 'NZD' },
+    { code: 'MXN' },
+    { code: 'SGD' },
+    { code: 'HKD' },
+    { code: 'NOK' },
+    { code: 'KRW' },
+    { code: 'TRY' },
+    { code: 'RUB' },
+    { code: 'INR' },
+    { code: 'BRL' },
+    { code: 'ZAR' },
+    { code: 'SAR' },
+    { code: 'AED' },
+    { code: 'THB' },
+    { code: 'DKK' },
+    { code: 'PLN' },
+    { code: 'HUF' },
+    { code: 'ILS' },
+    { code: 'CLP' },
+    { code: 'COP' },
+    { code: 'PEN' },
+    { code: 'MYR' },
+    { code: 'IDR' },
+    { code: 'PHP' },
+    { code: 'VND' },
+    { code: 'RSD' },
+    { code: 'LKR' },
+    { code: 'BDT' },
+    { code: 'NPR' },
+    { code: 'MOP' },
+    { code: 'GHS' },
+    { code: 'MAD' },
+    { code: 'XOF' },
+    { code: 'XAF' },
+    { code: 'XPF' },
+  ];
+  date = new FormControl(moment());
 
   constructor(
     private _courseService: CourseService,
@@ -58,6 +143,10 @@ export class CourseEditComponent {
       University: ['', [Validators.required, Validators.maxLength(50)]],
       Country: ['', [Validators.required, Validators.maxLength(50)]],
       City: ['', [Validators.required, Validators.maxLength(50)]],
+      StartDate: [null, Validators.required],
+      EndDate: [null, Validators.required],
+      Currency: ['', Validators.required],
+      Price: ['', [Validators.required, Validators.maxLength(20)]],
     });
 
     this.filteredUniversities = this.courseForm
@@ -69,7 +158,6 @@ export class CourseEditComponent {
         switchMap((value) => this._filter(value, 'University')),
         map((item) => this.transformAutoComplete(item))
       );
-
 
     this.filteredCountries = this.courseForm.get('Country')!.valueChanges.pipe(
       startWith(''),
@@ -95,9 +183,18 @@ export class CourseEditComponent {
 
   loadCourse(courseId: any) {
     if (courseId) {
-      this._courseService.getCourse(courseId).subscribe((course: Course) => {
-        this.course = course;
-      });
+      this._courseService
+        .getCourse(courseId)
+        .pipe(
+          map((item) => {
+            item.StartDate = moment((<any>item.StartDate)['$date']);
+            item.EndDate = moment((<any>item.EndDate)['$date']);
+            return item;
+          })
+        )
+        .subscribe((course: Course) => {
+          this.course = course;
+        });
     }
   }
 
@@ -108,9 +205,6 @@ export class CourseEditComponent {
   onFormSubmit() {
     if (this.courseForm.valid) {
       const type = this.courseForm.value;
-      // type.typeFather = this.types.filter(
-      //   (type) => type.id === this.typeFatherSelected
-      // )[0];
       if (this.data) {
         // this._typeService.update(this.data.id, this.typeForm.value).subscribe({
         //   next: (val: any) => {
@@ -148,5 +242,9 @@ export class CourseEditComponent {
       return of();
     }
     return this._courseService.getAutocompleteSuggestions(q, type);
+  }
+
+  compareObjects(o1: any, o2: any): boolean {
+    return o1.code === o2;
   }
 }
