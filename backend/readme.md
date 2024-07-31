@@ -42,7 +42,8 @@ This project is a FastAPI-based RESTful API for managing university courses. The
 
 1. **Start the FastAPI server**:
     ```bash
-    uvicorn src/app:app --host 0.0.0.0 --port 8000 --reload
+    cd src
+    uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     ```
 
 
@@ -137,6 +138,7 @@ university-courses-api/
 │   └── UniversitySchema.csv        # Sample CSV file with course data
 │
 ├── src/
+│   ├── app.py                      # Main App File 
 │   ├── db.py                       # Database operations
 │   ├── app.py                      # FastAPI endpoints
 │   └── processdata.py              # Data processing and threading logic
