@@ -62,18 +62,6 @@ app.add_event_handler("startup", startup_event)
 app.add_event_handler("shutdown", shutdown_event)
 
 
-class CourseData:
-    University: str
-    City: str
-    Country: str
-    CourseName: str
-    CourseDescription: str
-    Currency: str
-    StartDate: str
-    EndDate: str
-    Price: float
-
-
 @app.get("/courses/autocomplete")
 async def autocomplete(
     q: Optional[str] = Query("", alias="q", description="Name to filter categories"),
@@ -89,7 +77,7 @@ async def autocomplete(
 
 
 @app.post("/courses")
-async def create(course_data: CourseData):
+async def create(course_data: Dict):
     """Insert new course into the collection."""
     inserted_id = create_course(course_data.dict())
     return JSONResponse(content={"inserted_id": str(inserted_id)}, status_code=201)
