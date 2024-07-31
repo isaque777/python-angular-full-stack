@@ -42,7 +42,6 @@ This project is a FastAPI-based RESTful API for managing university courses. The
 
 1. **Start the FastAPI server**:
     ```bash
-    cd src
     uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     ```
 
