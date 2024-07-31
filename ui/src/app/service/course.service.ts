@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Course } from 'src/app/model/course';
 import { PaginatedCourse } from '../model/paginated-course';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class CourseService {
    * @returns An observable with the response containing the inserted course ID.
    */
   save(Course: Course): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, Course, { headers: this.headers });
+    return this.http.post(`${environment.apiBaseUrl}`, Course, { headers: this.headers });
   }
 
   /**
@@ -34,7 +35,7 @@ export class CourseService {
    */
   find(page: number, pageSize: number, q: string): Observable<PaginatedCourse> {
     return this.http.get<PaginatedCourse>(
-      `${this.baseUrl}?page=${page}&page_size=${pageSize}&q=${q}`
+      `${environment.apiBaseUrl}?page=${page}&page_size=${pageSize}&q=${q}`
     );
   }
 
@@ -45,7 +46,7 @@ export class CourseService {
    * @returns An observable with the response containing the number of modified documents.
    */
   update(courseId: string, updateData: Partial<Course>): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${courseId}`, updateData, {
+    return this.http.put(`${environment.apiBaseUrl}/${courseId}`, updateData, {
       headers: this.headers,
     });
   }
@@ -56,12 +57,12 @@ export class CourseService {
    * @returns An observable with the response containing the number of deleted documents.
    */
   delete(courseId: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${courseId}`);
+    return this.http.delete(`${environment.apiBaseUrl}/${courseId}`);
   }
 
   // Method to get course by ID
   findById(courseId: string): Observable<Course> {
-    const url = `${this.baseUrl}/${courseId}`;
+    const url = `${environment.apiBaseUrl}/${courseId}`;
     return this.http.get<Course>(url);
   }
 
@@ -74,6 +75,6 @@ export class CourseService {
   suggest(query: string, type: string): Observable<any> {
     const params = new HttpParams().set('q', query).set('type', type);
 
-    return this.http.get<any>(`${this.baseUrl}/autocomplete`, { params });
+    return this.http.get<any>(`${environment.apiBaseUrl}/autocomplete`, { params });
   }
 }
