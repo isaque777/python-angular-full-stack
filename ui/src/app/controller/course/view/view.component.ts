@@ -52,7 +52,7 @@ export class CourseViewComponent implements AfterViewInit {
       .pipe(
         startWith({}),
         switchMap(() =>
-          this.courseService.getCourses(
+          this.courseService.find(
             this.paginator.pageIndex,
             this.paginator.pageSize
           )

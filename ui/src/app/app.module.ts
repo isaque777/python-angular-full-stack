@@ -17,6 +17,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   NoopAnimationsModule
 } from '@angular/platform-browser/animations';
+import { CoreService } from "./service/core.service";
 
 @NgModule({
   declarations: [AppComponent, CourseViewComponent, CourseEditComponent],
@@ -35,7 +36,8 @@ import {
     FormsModule,
     AppRoutingModule,
   ],
-  providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
+  providers: [CoreService,
+    { provide: MAT_DIALOG_DATA, useValue: {} }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

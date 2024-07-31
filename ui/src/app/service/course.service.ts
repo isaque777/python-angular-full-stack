@@ -21,7 +21,7 @@ export class CourseService {
    * @param Course The data of the course to be created.
    * @returns An observable with the response containing the inserted course ID.
    */
-  createCourse(Course: Course): Observable<any> {
+  save(Course: Course): Observable<any> {
     return this.http.post(`${this.baseUrl}`, Course, { headers: this.headers });
   }
 
@@ -31,7 +31,7 @@ export class CourseService {
    * @param pageSize The number of courses per page.
    * @returns An observable with the list of courses.
    */
-  getCourses(page: number, pageSize: number): Observable<PaginatedCourse> {
+  find(page: number, pageSize: number): Observable<PaginatedCourse> {
     return this.http.get<PaginatedCourse>(
       `${this.baseUrl}?page=${page}&page_size=${pageSize}`
     );
@@ -43,7 +43,7 @@ export class CourseService {
    * @param updateData The updated data for the course.
    * @returns An observable with the response containing the number of modified documents.
    */
-  updateCourse(courseId: string, updateData: Partial<Course>): Observable<any> {
+  update(courseId: string, updateData: Partial<Course>): Observable<any> {
     return this.http.put(`${this.baseUrl}/${courseId}`, updateData, {
       headers: this.headers,
     });
@@ -54,12 +54,12 @@ export class CourseService {
    * @param courseId The ID of the course to be deleted.
    * @returns An observable with the response containing the number of deleted documents.
    */
-  deleteCourse(courseId: string): Observable<any> {
+  delete(courseId: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${courseId}`);
   }
 
   // Method to get course by ID
-  getCourse(courseId: string): Observable<Course> {
+  findById(courseId: string): Observable<Course> {
     const url = `${this.baseUrl}/${courseId}`;
     return this.http.get<Course>(url);
   }
@@ -70,7 +70,7 @@ export class CourseService {
    * @param type The type of the category to filter by (e.g., 'University').
    * @returns Observable containing the list of suggestions.
    */
-  getAutocompleteSuggestions(query: string, type: string): Observable<any> {
+  suggest(query: string, type: string): Observable<any> {
     const params = new HttpParams().set('q', query).set('type', type);
 
     return this.http.get<any>(`${this.baseUrl}/autocomplete`, { params });

@@ -31,6 +31,7 @@ import {
   switchMap,
 } from 'rxjs';
 import { CourseService } from 'src/app/service/course.service';
+import { CoreService } from 'src/app/service/core.service';
 
 const moment = _rollupMoment || _moment;
 
@@ -120,6 +121,7 @@ export class CourseEditComponent {
 
   constructor(
     private _courseService: CourseService,
+    private _coreService: CoreService,
     private formBuilder: FormBuilder,
     private _fb: FormBuilder,
     private _dialogRef: MatDialogRef<CourseEditComponent>,
@@ -184,7 +186,7 @@ export class CourseEditComponent {
   loadCourse(courseId: any) {
     if (courseId) {
       this._courseService
-        .getCourse(courseId)
+        .findById(courseId)
         .pipe(
           map((item) => {
             item.StartDate = moment((<any>item.StartDate)['$date']);
@@ -203,45 +205,29 @@ export class CourseEditComponent {
   };
 
   onFormSubmit() {
+    debugger;
     if (this.courseForm.valid) {
-      const type = this.courseForm.value;
+      const course = this.courseForm.value;
       if (this.data) {
-        // this._typeService.update(this.data.id, this.typeForm.value).subscribe({
-        //   next: (val: any) => {
-        //     this._courseService.openSnackBar('Type detail updated!');
-        //     this._dialogRef.close(true);
-        //   },
-        // });
+        this._courseService.update(this.data, course).subscribe((response) => {
+          console.log('Course updated successfully', response);
+          this._dialogRef.close(true);
+        });
       } else {
-        // this._typeService.save(type).subscribe({
-        //   next: (val: any) => {
-        //     this._courseService.openSnackBar('Type added successfully');
-        //     this._dialogRef.close(true);
-        //   },
-        // });
+        this._courseService.save(course).subscribe((response) => {
+          console.log('Course created successfully', response);
+          this._coreService.openSnackBar('Course added successfully');
+          this._dialogRef.close(true);
+        });
       }
     }
   }
-
-  // // filter and return the values
-  // filter(q: string, type: string): Observable<any[]> {
-  //   debugger
-  //   // call the service which makes the http-request
-  //   return this._courseService.getAutocompleteSuggestions(q, type);
-  //   // .pipe(
-  //   //   map((response) =>
-  //   //     response.filter((option : any) => {
-  //   //       return option.name.toLowerCase().indexOf(val.toLowerCase()) === 0;
-  //   //     })
-  //   //   )
-  //   // );
-  // }
 
   private _filter(q: string, type: string): Observable<any[]> {
     if (q.replace('/"', '').length < 1) {
       return of();
     }
-    return this._courseService.getAutocompleteSuggestions(q, type);
+    return this._courseService.suggest(q, type);
   }
 
   compareObjects(o1: any, o2: any): boolean {
