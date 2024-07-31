@@ -1,0 +1,12 @@
+# Exclude test files and directories
+tests/
+*.md
+*.log
+
+# Exclude local configuration files
+*.env
+*.local
+
+# Exclude build directories if they are not needed
+build/
+node_modules/

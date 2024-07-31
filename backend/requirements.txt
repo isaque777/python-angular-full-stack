@@ -1,7 +1,7 @@
+fastapi==0.111.1
+mongomock==4.1.2
 pandas==2.2.2
-scikit-learn==1.5.1
-mongomock
-pymongo
-fastapi
-uvicorn
-pydantic
+pydantic==2.8.2
+pymongo==4.8.0
+scikit_learn==1.5.1
+uvicorn==0.30.3
