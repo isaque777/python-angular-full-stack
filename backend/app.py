@@ -9,6 +9,7 @@ from bson import ObjectId, json_util
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from pymongo import ASCENDING, MongoClient
 
 from db import (
@@ -62,6 +63,18 @@ app.add_event_handler("startup", startup_event)
 app.add_event_handler("shutdown", shutdown_event)
 
 
+class CourseData(BaseModel):
+    University: str
+    City: str
+    Country: str
+    CourseName: str
+    CourseDescription: str
+    Currency: str
+    StartDate: str
+    EndDate: str
+    Price: float
+
+
 @app.get("/courses/autocomplete")
 async def autocomplete(
     q: Optional[str] = Query("", alias="q", description="Name to filter categories"),
@@ -77,7 +90,7 @@ async def autocomplete(
 
 
 @app.post("/courses")
-async def create(course_data: Dict):
+async def create(course_data: CourseData):
     """Insert new course into the collection."""
     inserted_id = create_course(course_data.dict())
     return JSONResponse(content={"inserted_id": str(inserted_id)}, status_code=201)
