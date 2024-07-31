@@ -1,6 +1,6 @@
 import concurrent.futures
 import time
-from db import create_courses
+from db import create_courses_and_categories
 from db import print_courses
 from db import get_courses
 from filereader import data_factory
@@ -12,7 +12,16 @@ def check_data_base(thread_id):
 
     expired = True
 
-    if get_courses().find().size() == 0:
+    # Query the collection
+    courses = get_courses().find()
+
+    # Get the size of the cursor
+    courses_list = list(courses)  # Convert cursor to list
+    size = len(courses_list)  # Get the length of the list
+
+    print(f"Size of courses: {size}")
+
+    if size > 0:
         expired = False
         print("Data found in MongoDB. No need to process the CSV file.")
 
@@ -38,7 +47,7 @@ def check_data_base(thread_id):
     print(f"Thread-{thread_id} finished.")
 
 
-def start_infinite_threads(expire_after_seconds):
+def start_infinite_threads():
     """Start an effectively infinite number of threads with a ThreadPoolExecutor."""
     # Create a ThreadPoolExecutor to manage threads
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
@@ -61,7 +70,7 @@ def initial_data():
     df = data_factory()
 
     # Insert documents
-    create_courses(df)
+    create_courses_and_categories(df)
 
     # Query and print all documents
     print("Initial documents:")
@@ -71,8 +80,8 @@ def initial_data():
     print("Waiting for TTL expiration...")
 
 
-def start_process(expire_after_seconds):
+def start_process():
     initial_data()
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-    executor.submit(start_infinite_threads, expire_after_seconds)
+    executor.submit(start_infinite_threads)
     return executor

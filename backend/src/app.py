@@ -10,11 +10,12 @@ from pydantic import BaseModel
 
 from db import (
     create_course,
-    create_courses,
     create_in_memory_mongodb,
     delete_course,
-    get_courses,
+    get_courses_paginated,
     update_course,
+    get_categories,
+    get_categories_aggr,
 )
 from filereader import data_factory
 from processdata import start_process
@@ -29,7 +30,7 @@ def startup_event():
     create_in_memory_mongodb(expire_after_seconds)
 
     # Start process
-    start_process(expire_after_seconds)
+    start_process()
 
     # Main thread can continue executing other tasks
     print("Main thread continues execution...")
@@ -70,6 +71,15 @@ class CourseData(BaseModel):
     Price: float
 
 
+@app.get("/categories")
+async def categories():
+    """Get category mappings for specified columns."""
+    categories = get_categories_aggr()
+    categories_list = list(categories)
+    categories_json = json.loads(json_util.dumps(categories_list))
+    return JSONResponse(content=categories_json, status_code=200)
+
+
 @app.post("/courses")
 async def create(course_data: CourseData):
     """Insert new course into the collection."""
@@ -82,7 +92,7 @@ async def find(
     page: int = Query(1, alias="page"), page_size: int = Query(10, alias="page_size")
 ):
     """Get courses with pagination."""
-    courses_cursor = get_courses(page, page_size)
+    courses_cursor = get_courses_paginated(page, page_size)
     courses_list = list(courses_cursor)
     courses_json = json.loads(json_util.dumps(courses_list))
     return JSONResponse(content=courses_json, status_code=200)

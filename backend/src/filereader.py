@@ -31,9 +31,25 @@ def convert_text_columns(df):
         "CourseDescription",
         "Currency",
     ]
+    # Dictionary to store the categories for each column
+    categories = {
+        "University": {},
+        "City": {},
+        "Country": {},
+        "CourseName": {},
+        "CourseDescription": {},
+        "Currency": {},
+    }
+
     for column in text_columns:
-        df[column] = df[column].astype("category").cat.codes
-    return df
+        # Convert to categorical and get the categories
+        df[column] = df[column].astype("category")
+        # categories[column] = dict(enumerate(df[column].cat.categories))
+        # Convert to codes
+        # df[column] = df[column].cat.codes
+        df[column] = df[column].cat.categories
+
+    return df, categories
 
 
 def display_dataframe(df):
@@ -53,7 +69,7 @@ def data_factory():
     df = normalize_price(df)
 
     # Step 4: Convert text columns to categorical codes
-    df = convert_text_columns(df)
+    # df, categories = convert_text_columns(df)
 
     # Display the processed DataFrame
     display_dataframe(df)

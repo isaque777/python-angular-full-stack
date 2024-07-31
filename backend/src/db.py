@@ -2,10 +2,13 @@ import mongomock
 from pymongo import MongoClient
 from pymongo import ASCENDING
 from datetime import datetime
+import pandas as pd
 
 client = mongomock.MongoClient()
 db = client["test_db"]
 collection = db["course"]
+categories = db["categories"]
+categories_data = {}
 
 
 def create_in_memory_mongodb(expire_after_seconds):
@@ -18,7 +21,7 @@ def create_in_memory_mongodb(expire_after_seconds):
     return client, db, collection
 
 
-def create_courses(df):
+def create_courses_and_categories(df):
     """Convert DataFrame to dictionary and insert into MongoDB collection."""
     df_dict = df.to_dict(orient="records")
 
@@ -28,6 +31,20 @@ def create_courses(df):
         record["createdAt"] = current_time
 
     collection.insert_many(df_dict)
+
+    # Convert data to DataFrame
+    # df = pd.DataFrame(cat_df)
+
+    #  Join Country, City, and University into Location
+    # df["Location"] = df[["Country", "City", "University"]].agg(", ".join, axis=1)
+
+    # Convert DataFrame to a list of dictionaries
+    # data_to_insert = df.to_dict(orient="records")
+
+    # Insert data into MongoDB
+    # categories.insert_many(data_to_insert)
+
+    print("Data inserted successfully")
 
 
 def create_course(course_data):
@@ -49,7 +66,54 @@ def get_courses():
     return collection
 
 
-def get_courses(page, page_size):
+def get_categories():
+    """Get all categories in the collection."""
+    return categories.find()
+
+
+def get_categories_aggr():
+    """Get all categories in the collection."""
+    # pipeline = [
+    #     {
+    #         "$project": {
+    #             "University": 1,
+    #             # "City": 1,
+    #             # "Country": 1,
+    #             # "CourseName": 1,
+    #         }
+    #     }
+    # ]
+
+    # Aggregation pipeline
+    pipeline = [
+        {
+            "$group": {
+                "_id": "$University",
+                # "total_courses": {"$sum": 1},
+                # "total_price": {"$sum": "$Price"},
+                # "courses": {
+                #     "$push": {
+                #         "University": "$University",
+                #         # "CourseDescription": "$CourseDescription",
+                #         # "StartDate": "$StartDate",
+                #         # "EndDate": "$EndDate",
+                #         # "Price": "$Price",
+                #         # "Currency": "$Currency",
+                #     }
+                # },
+            }
+        },
+        {"$sort": {"University": -1}},  # Sort by total number of courses, descending
+    ]
+
+    # Fetch the data
+    # cursor = collection.aggregate(pipeline)
+    # data = list(cursor)
+
+    return collection.aggregate(pipeline)
+
+
+def get_courses_paginated(page, page_size):
 
     # Example usage
     # page = 1  # Page number (starting from 1)

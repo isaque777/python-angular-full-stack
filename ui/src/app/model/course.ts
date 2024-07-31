@@ -9,3 +9,5 @@ export interface CourseData {
   EndDate: string;   // Use string for date in ISO format
   Price: number;     // Use number for floating-point values
 }
+
+
