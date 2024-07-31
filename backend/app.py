@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from pymongo import ASCENDING, MongoClient
 
+
 from db import (
     create_course,
     create_in_memory_mongodb,
