@@ -1,7 +1,8 @@
+import { Course } from 'src/app/model/course';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CourseData } from '../model/course';
+import { PaginatedCourse } from '../model/paginated-course';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +18,11 @@ export class CourseService {
 
   /**
    * Create a new course.
-   * @param courseData The data of the course to be created.
+   * @param Course The data of the course to be created.
    * @returns An observable with the response containing the inserted course ID.
    */
-  createCourse(courseData: CourseData): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, courseData, { headers: this.headers });
+  createCourse(Course: Course): Observable<any> {
+    return this.http.post(`${this.baseUrl}`, Course, { headers: this.headers });
   }
 
   /**
@@ -30,8 +31,8 @@ export class CourseService {
    * @param pageSize The number of courses per page.
    * @returns An observable with the list of courses.
    */
-  getCourses(page: number, pageSize: number): Observable<CourseData[]> {
-    return this.http.get<CourseData[]>(`${this.baseUrl}?page=${page}&page_size=${pageSize}`);
+  getCourses(page: number, pageSize: number): Observable<PaginatedCourse> {
+    return this.http.get<PaginatedCourse>(`${this.baseUrl}?page=${page}&page_size=${pageSize}`);
   }
 
   /**
@@ -40,7 +41,7 @@ export class CourseService {
    * @param updateData The updated data for the course.
    * @returns An observable with the response containing the number of modified documents.
    */
-  updateCourse(courseId: string, updateData: Partial<CourseData>): Observable<any> {
+  updateCourse(courseId: string, updateData: Partial<Course>): Observable<any> {
     return this.http.put(`${this.baseUrl}/${courseId}`, updateData, { headers: this.headers });
   }
 

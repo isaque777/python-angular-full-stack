@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from pymongo import ASCENDING
 from datetime import datetime
 import pandas as pd
+import math
 
 client = mongomock.MongoClient()
 db = client["test_db"]
@@ -113,22 +114,48 @@ def get_categories_aggr():
     return collection.aggregate(pipeline)
 
 
+# def get_courses_paginated(page, page_size):
+
+#     # Example usage
+#     # page = 1  # Page number (starting from 1)
+#     # page_size = 10  # Number of documents per page
+
+#     # get_courses(collection, page, page_size)
+
+#     """Query and print courses in the collection with pagination."""
+#     # Calculate the number of documents to skip
+#     skip = (page - 1) * page_size
+
+#     # Fetch the paginated results
+#     courses = collection.find().skip(skip).limit(page_size)
+
+#     return courses
+
+
 def get_courses_paginated(page, page_size):
+    """Query and print courses in the collection with pagination, including total items and total pages."""
 
-    # Example usage
-    # page = 1  # Page number (starting from 1)
-    # page_size = 10  # Number of documents per page
+    # Count total items in the collection
+    total_items = collection.count_documents({})
 
-    # get_courses(collection, page, page_size)
-
-    """Query and print courses in the collection with pagination."""
     # Calculate the number of documents to skip
     skip = (page - 1) * page_size
 
     # Fetch the paginated results
     courses = collection.find().skip(skip).limit(page_size)
 
-    return courses
+    # Calculate total pages
+    total_pages = math.ceil(total_items / page_size)
+
+    # Convert courses to a list (if needed) and return along with pagination info
+    courses_list = list(courses)
+    return {
+        "total_items": total_items,
+        "total_pages": total_pages,
+        "page": page,
+        "page_size": page_size,
+        "courses": courses_list,
+    }
 
 
 def update_course(filter, update):

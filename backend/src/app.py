@@ -93,8 +93,8 @@ async def find(
 ):
     """Get courses with pagination."""
     courses_cursor = get_courses_paginated(page, page_size)
-    courses_list = list(courses_cursor)
-    courses_json = json.loads(json_util.dumps(courses_list))
+    # courses_list = list(courses_cursor)
+    courses_json = json.loads(json_util.dumps(courses_cursor))
     return JSONResponse(content=courses_json, status_code=200)
 
 

@@ -1,7 +1,7 @@
-export interface TransformedCourseData {
+export interface TransformedCourse {
   CourseName: string;
   Location: string;
-  StartDate: string;
+  StartDate: Date;
   Length: string;
   Cost: string;
 }

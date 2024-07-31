@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Edit</h2>
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="courseForm" novalidate (ngSubmit)="onFormSubmit()">
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button>
+</mat-dialog-actions>

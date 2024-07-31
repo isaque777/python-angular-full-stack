@@ -1,5 +1,3 @@
-{{transformedData}}
-
 <!-- <div *ngIf="courses$ | async as courses;">
   <ul>
     <li *ngFor="let course of courses">
@@ -8,45 +6,79 @@
   </ul>
 </div> -->
 
-<div class="mat-elevation-z8">
-  <table mat-table [dataSource]="transformedData" class="mat-elevation-z8">
+<div class="demo-button-container" *ngIf="dataSource">
+  <button mat-raised-button (click)="addData()" class="demo-button">
+    Add data
+  </button>
+  <!-- [disabled]="!dataSource.length" -->
+  <button mat-raised-button (click)="removeData()" class="demo-button">
+    Remove data
+  </button>
+</div>
 
-    <!-- Course Name Column -->
-    <ng-container matColumnDef="CourseName">
-      <th mat-header-cell *matHeaderCellDef> Course Name </th>
-      <td mat-cell *matCellDef="let element"> {{element.CourseName}} </td>
-    </ng-container>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
 
-    <!-- Location Column -->
-    <ng-container matColumnDef="Location">
-      <th mat-header-cell *matHeaderCellDef> Location </th>
-      <td mat-cell *matCellDef="let element"> {{element.Location}} </td>
-    </ng-container>
+  <!-- Course Name Column -->
+  <ng-container matColumnDef="CourseName">
+    <th mat-header-cell *matHeaderCellDef> Course Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.CourseName}} </td>
+  </ng-container>
 
-    <!-- Start Date Column -->
-    <ng-container matColumnDef="StartDate">
-      <th mat-header-cell *matHeaderCellDef> Start Date </th>
-      <td mat-cell *matCellDef="let element"> {{element.StartDate}} </td>
-    </ng-container>
+  <!-- Location Column -->
+  <ng-container matColumnDef="Location">
+    <th mat-header-cell *matHeaderCellDef> Location </th>
+    <td mat-cell *matCellDef="let element"> {{element.Location}} </td>
+  </ng-container>
 
-    <!-- Length Column -->
-    <ng-container matColumnDef="Length">
-      <th mat-header-cell *matHeaderCellDef> Length </th>
-      <td mat-cell *matCellDef="let element"> {{element.Length}} </td>
-    </ng-container>
+  <!-- Start Date Column -->
+  <ng-container matColumnDef="StartDate">
+    <th mat-header-cell *matHeaderCellDef> Start Date </th>
+    <td mat-cell *matCellDef="let element"> {{ element.StartDate | date: 'yyyy/MM/dd' }}</td>
+  </ng-container>
 
-    <!-- Cost Column -->
-    <ng-container matColumnDef="Cost">
-      <th mat-header-cell *matHeaderCellDef> Cost </th>
-      <td mat-cell *matCellDef="let element"> {{element.Cost}} </td>
-    </ng-container>
+  <!-- Length Column -->
+  <ng-container matColumnDef="Length">
+    <th mat-header-cell *matHeaderCellDef> Length </th>
+    <td mat-cell *matCellDef="let element"> {{element.Length}} </td>
+  </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+  <!-- Cost Column -->
+  <ng-container matColumnDef="Cost">
+    <th mat-header-cell *matHeaderCellDef> Cost </th>
+    <td mat-cell *matCellDef="let element">
+      <!-- <mat-icon>{{element.Currency}}</mat-icon> -->
+      {{element.Currency}} {{element.Cost}}
+    </td>
+  </ng-container>
 
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+  <!-- Edit Column -->
+  <ng-container matColumnDef="Edit">
+    <th mat-header-cell *matHeaderCellDef> Edit </th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button [matMenuTriggerFor]="appMenu" [matMenuTriggerData]="{id: element.id}">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]"
                  showFirstLastButtons
                  aria-label="Select page of periodic elements">
-  </mat-paginator>
-</div>
+  </mat-paginator> -->
+<mat-paginator #paginator class="demo-paginator" (page)="handlePageEvent($event)" [length]="length"
+  [pageSize]="pageSize" [disabled]="disabled" [showFirstLastButtons]="showFirstLastButtons"
+  [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []" [hidePageSize]="hidePageSize" [pageIndex]="pageIndex"
+  aria-label="Select page">
+</mat-paginator>
+
+<mat-menu #appMenu="matMenu">
+  <ng-template matMenuContent let-id="id">
+    <button mat-menu-item (click)="openDialog(id)"> <mat-icon>edit</mat-icon> Edit {{id}}</button>
+    <button mat-menu-item> <mat-icon>delete</mat-icon> Delete</button>
+  </ng-template>
+</mat-menu>
