@@ -2,7 +2,6 @@ pandas==2.2.2
 scikit-learn==1.5.1
 mongomock
 pymongo
-setuptools
 fastapi
 uvicorn
 pydantic
