@@ -1,6 +1,5 @@
-
 <div class="demo-button-container" *ngIf="dataSource">
-  <button mat-raised-button (click)="addData()" class="demo-button">
+  <button mat-raised-button (click)="openDialog(null)" class="demo-button">
     Add data
   </button>
   <!-- [disabled]="!dataSource.length" -->
@@ -73,7 +72,7 @@
 <mat-menu #appMenu="matMenu">
   <ng-template matMenuContent let-id="id">
     <button mat-menu-item (click)="openDialog(id)"> <mat-icon>edit</mat-icon> Edit</button>
-    <button mat-menu-item> <mat-icon>delete</mat-icon> Delete</button>
+    <button mat-menu-item (click)="openDialogDelete(id)"> <mat-icon>delete</mat-icon> Delete</button>
   </ng-template>
 </mat-menu>
 

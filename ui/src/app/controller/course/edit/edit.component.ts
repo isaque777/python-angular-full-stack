@@ -122,7 +122,6 @@ export class CourseEditComponent {
   constructor(
     private _courseService: CourseService,
     private _coreService: CoreService,
-    private formBuilder: FormBuilder,
     private _fb: FormBuilder,
     private _dialogRef: MatDialogRef<CourseEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -137,7 +136,7 @@ export class CourseEditComponent {
       City: ['', [Validators.required, Validators.maxLength(100)]],
       StartDate: [null, Validators.required],
       EndDate: [null, Validators.required],
-      Currency: [''],
+      Currency: [null, Validators.required],
       Price: ['', [Validators.required, Validators.maxLength(20)]],
     });
 
@@ -207,6 +206,18 @@ export class CourseEditComponent {
         .subscribe((course: Course) => {
           this.course = course;
         });
+    } else {
+      this.course = {
+        University: '',
+        Country: '',
+        City: '',
+        CourseName: '',
+        CourseDescription: '',
+        StartDate: '', // or null if you prefer to use null for empty dates
+        EndDate: '', // or null
+        Price: 0,
+        Currency: '',
+      };
     }
   }
 
@@ -230,6 +241,7 @@ export class CourseEditComponent {
         this._dialogRef.close(true);
       });
     } else {
+      course.Currency = course.Currency.code;
       this._courseService.save(course).subscribe((response) => {
         console.log('Course created successfully', response);
         this._coreService.openSnackBar('Course added successfully');

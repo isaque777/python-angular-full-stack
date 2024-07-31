@@ -124,9 +124,9 @@ def update_course(id, update):
     print(update_result)
 
 
-def delete_course(filter):
+def delete_course(id):
     """Delete a document from the collection."""
-    collection.delete_one(filter)
+    collection.delete_one({"_id": ObjectId(id)})
 
 
 def get_course(course_id):

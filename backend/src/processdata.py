@@ -21,7 +21,7 @@ def check_data_base(thread_id):
 
     print(f"Size of courses: {size}")
 
-    if size > 0:
+    if size < 1000:
         expired = False
         print("Data found in MongoDB. No need to process the CSV file.")
 

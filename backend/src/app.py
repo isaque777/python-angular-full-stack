@@ -1,8 +1,7 @@
-from typing import Optional
 import json
 import math
 from datetime import datetime
-from typing import Dict
+from typing import Dict, Optional
 
 import mongomock
 import uvicorn
@@ -18,8 +17,8 @@ from db import (
     create_in_memory_mongodb,
     delete_course,
     get_categories,
-    get_course,
     get_categories_aggr,
+    get_course,
     get_courses_paginated,
     update_course,
 )

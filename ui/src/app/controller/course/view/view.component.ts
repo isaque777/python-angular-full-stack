@@ -6,8 +6,9 @@ import * as moment from 'moment';
 import { map, startWith, switchMap } from 'rxjs';
 import { TransformedCourse } from 'src/app/model/transformed-course-data';
 import { CourseService } from './../../../service/course.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CourseEditComponent } from '../edit/edit.component';
+import { CourseDeleteComponent } from './delete/delete.component';
 /**
  * @title Table with pagination
  */
@@ -17,6 +18,12 @@ import { CourseEditComponent } from '../edit/edit.component';
   styleUrls: ['./view.component.css'],
 })
 export class CourseViewComponent implements AfterViewInit {
+  openDialogDelete(data: any) {
+    this.dialog.open(CourseDeleteComponent, {
+      data,
+      width: '250px',
+    });
+  }
   length = 50;
   pageSize = 10;
   pageIndex = 0;
@@ -76,11 +83,11 @@ export class CourseViewComponent implements AfterViewInit {
     this.pageIndex = e.pageIndex;
   }
 
-  openDialog(data: string) {
+  openDialog(data: string | null) {
     const dialogRef = this.dialog.open(CourseEditComponent, {
       data,
-      width:'80%',   // Set width to 80%  of the window's total width
-      height:'80%',
+      width: '80%', // Set width to 80%  of the window's total width
+      height: '80%',
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -95,12 +102,6 @@ export class CourseViewComponent implements AfterViewInit {
         .split(',')
         .map((str) => +str);
     }
-  }
-
-  addData() {
-    // const randomElementIndex = Math.floor(Math.random() * ELEMENT_DATA.length);
-    // this.dataSource.push(ELEMENT_DATA[randomElementIndex]);
-    // this.table.renderRows();
   }
 
   removeData() {
@@ -129,3 +130,4 @@ export class CourseViewComponent implements AfterViewInit {
     });
   }
 }
+
