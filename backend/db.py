@@ -18,9 +18,9 @@ categories_data = {}
 def create_in_memory_mongodb(expire_after_seconds):
     """Create an in-memory MongoDB instance and return the client, database, and collection."""
     # Add TTL index to the 'createdAt' field
-    collection.create_index(
-        [("createdAt", ASCENDING)], expireAfterSeconds=expire_after_seconds
-    )
+    # collection.create_index(
+    #     [("createdAt", ASCENDING)], expireAfterSeconds=expire_after_seconds
+    # )
 
     return client, db, collection
 
