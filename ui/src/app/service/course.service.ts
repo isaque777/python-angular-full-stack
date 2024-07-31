@@ -1,7 +1,7 @@
-import { Course } from 'src/app/model/course';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Course } from 'src/app/model/course';
 import { PaginatedCourse } from '../model/paginated-course';
 
 @Injectable({
@@ -52,5 +52,26 @@ export class CourseService {
    */
   deleteCourse(courseId: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${courseId}`);
+  }
+
+  // Method to get course by ID
+  getCourse(courseId: string): Observable<Course> {
+    const url = `${this.baseUrl}/${courseId}`;
+    return this.http.get<Course>(url);
+  }
+
+
+  /**
+   * Get autocomplete suggestions for courses based on query and type.
+   * @param query The search query string.
+   * @param type The type of the category to filter by (e.g., 'University').
+   * @returns Observable containing the list of suggestions.
+   */
+  getAutocompleteSuggestions(query: string, type: string): Observable<any> {
+    const params = new HttpParams()
+      .set('q', query)
+      .set('type', type);
+
+    return this.http.get<any>(this.baseUrl, { params });
   }
 }

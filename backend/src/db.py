@@ -1,4 +1,5 @@
 import mongomock
+from bson import ObjectId
 from pymongo import MongoClient
 from pymongo import ASCENDING
 from datetime import datetime
@@ -72,64 +73,17 @@ def get_categories():
     return categories.find()
 
 
-def get_categories_aggr():
+def get_categories_aggr(q, type):
     """Get all categories in the collection."""
-    # pipeline = [
-    #     {
-    #         "$project": {
-    #             "University": 1,
-    #             # "City": 1,
-    #             # "Country": 1,
-    #             # "CourseName": 1,
-    #         }
-    #     }
-    # ]
 
     # Aggregation pipeline
     pipeline = [
-        {
-            "$group": {
-                "_id": "$University",
-                # "total_courses": {"$sum": 1},
-                # "total_price": {"$sum": "$Price"},
-                # "courses": {
-                #     "$push": {
-                #         "University": "$University",
-                #         # "CourseDescription": "$CourseDescription",
-                #         # "StartDate": "$StartDate",
-                #         # "EndDate": "$EndDate",
-                #         # "Price": "$Price",
-                #         # "Currency": "$Currency",
-                #     }
-                # },
-            }
-        },
-        {"$sort": {"University": -1}},  # Sort by total number of courses, descending
+        {"$match": {type: {"$regex": q, "$options": "i"}}},  # Case-insensitive match
+        {"$group": {"_id": "$" + type}},
+        {"$sort": {type: -1}},  # Sort by total number of courses, descending
     ]
 
-    # Fetch the data
-    # cursor = collection.aggregate(pipeline)
-    # data = list(cursor)
-
     return collection.aggregate(pipeline)
-
-
-# def get_courses_paginated(page, page_size):
-
-#     # Example usage
-#     # page = 1  # Page number (starting from 1)
-#     # page_size = 10  # Number of documents per page
-
-#     # get_courses(collection, page, page_size)
-
-#     """Query and print courses in the collection with pagination."""
-#     # Calculate the number of documents to skip
-#     skip = (page - 1) * page_size
-
-#     # Fetch the paginated results
-#     courses = collection.find().skip(skip).limit(page_size)
-
-#     return courses
 
 
 def get_courses_paginated(page, page_size):
@@ -166,3 +120,11 @@ def update_course(filter, update):
 def delete_course(filter):
     """Delete a document from the collection."""
     collection.delete_one(filter)
+
+
+def get_course(course_id):
+    """Get a course by its ID."""
+    if not ObjectId.is_valid(course_id):
+        raise ValueError("Invalid ObjectId format")
+    course = collection.find_one({"_id": ObjectId(course_id)})
+    return course

@@ -1,3 +1,4 @@
+import { Course } from 'src/app/model/course';
 import { Component } from '@angular/core';
 
 import { Inject } from '@angular/core';
@@ -8,10 +9,11 @@ import { CourseService } from 'src/app/service/course.service';
 @Component({
   selector: 'app-course-edit',
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.sass'],
+  styleUrls: ['./edit.component.css'],
 })
 export class CourseEditComponent {
   courseForm: FormGroup;
+  course: Course | undefined;
   // types: Array<Type>;
 
   constructor(
@@ -21,18 +23,23 @@ export class CourseEditComponent {
     private _dialogRef: MatDialogRef<CourseEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
+    this.loadCourse(data);
+
+    // Assuming _fb is your FormBuilder instance
     this.courseForm = this._fb.group({
-      code: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(20),
-          // ValidationService.invalidHardCodedConstant,
-        ],
-      ],
-      description: ['', [Validators.required, Validators.maxLength(20)]],
-      typeFather: ['', null],
+      CourseName: ['', [Validators.required, Validators.maxLength(20)]],
+      CourseDescription: ['', [Validators.required, Validators.maxLength(100)]],
+      University: ['', [Validators.required, Validators.maxLength(50)]],
+      Country: ['', [Validators.required, Validators.maxLength(50)]],
+      City: ['', [Validators.required, Validators.maxLength(50)]],
     });
+  }
+  loadCourse(courseId: any) {
+    if (courseId) {
+      this._courseService.getCourse(courseId).subscribe((course: Course) => {
+        this.course = course;
+      });
+    }
   }
 
   public hasError = (controlName: string, errorName: string) => {

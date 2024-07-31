@@ -76,9 +76,11 @@ export class CourseViewComponent implements AfterViewInit {
     this.pageIndex = e.pageIndex;
   }
 
-  openDialog(id: string) {
+  openDialog(data: string) {
     const dialogRef = this.dialog.open(CourseEditComponent, {
-      id,
+      data,
+      width:'80%',   // Set width to 80%  of the window's total width
+      height:'80%',
     });
 
     dialogRef.afterClosed().subscribe((result) => {

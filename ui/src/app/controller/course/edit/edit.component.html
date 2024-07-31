@@ -1,9 +1,99 @@
-<h2 mat-dialog-title>Edit</h2>
-<mat-dialog-content class="mat-typography">
-  <form [formGroup]="courseForm" novalidate (ngSubmit)="onFormSubmit()">
-  </form>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button>
-</mat-dialog-actions>
+<div class="main-body" *ngIf="course">
+  <h2 mat-dialog-title>Edit</h2>
+  <mat-dialog-content class="mat-typography">
+    <form [formGroup]="courseForm" novalidate (ngSubmit)="onFormSubmit()">
+
+      <div mat-dialog-content class="content">
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Course Name</mat-label>
+            <input matInput type="text" [(ngModel)]="course.CourseName" placeholder="Course Name"
+              formControlName="CourseName" id="CourseName">
+            <mat-error *ngIf="hasError('CourseName', 'required')">Course Name is required</mat-error>
+            <mat-error *ngIf="hasError('CourseName', 'maxlength')">Limit exceed</mat-error>
+            <mat-error *ngIf="hasError('CourseName', 'invalidHardCodedConstant')">Invalid Constant, should be alphabet,
+              lowercase, no space</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Course Description</mat-label>
+            <input matInput type="text" [(ngModel)]="course.CourseDescription" placeholder="Course Description"
+              formControlName="CourseDescription" id="CourseDescription">
+            <mat-error *ngIf="hasError('CourseDescription', 'required')">Course Description is required</mat-error>
+            <mat-error *ngIf="hasError('CourseDescription', 'maxlength')">Limit exceed</mat-error>
+            <mat-error *ngIf="hasError('CourseDescription', 'invalidHardCodedConstant')">Invalid Constant, should be
+              alphabet,
+              lowercase, no space</mat-error>
+          </mat-form-field>
+        </div>
+
+
+
+        <!-- University Field -->
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>University</mat-label>
+            <input matInput type="text" [(ngModel)]="course.University" placeholder="University"
+              formControlName="University" id="University">
+            <mat-error *ngIf="hasError('University', 'required')">University is required</mat-error>
+            <mat-error *ngIf="hasError('University', 'maxlength')">Limit exceed</mat-error>
+            <mat-error *ngIf="hasError('University', 'invalidHardCodedConstant')">Invalid Constant, should be alphabet,
+              lowercase, no space</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Country Field -->
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Country</mat-label>
+            <input matInput type="text" [(ngModel)]="course.Country" placeholder="Country" formControlName="Country"
+              id="Country">
+            <mat-error *ngIf="hasError('Country', 'required')">Country is required</mat-error>
+            <mat-error *ngIf="hasError('Country', 'maxlength')">Limit exceed</mat-error>
+            <mat-error *ngIf="hasError('Country', 'invalidHardCodedConstant')">Invalid Constant, should be alphabet,
+              lowercase, no space</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- City Field -->
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>City</mat-label>
+            <input matInput type="text" [(ngModel)]="course.City" placeholder="City" formControlName="City" id="City">
+            <mat-error *ngIf="hasError('City', 'required')">City is required</mat-error>
+            <mat-error *ngIf="hasError('City', 'maxlength')">Limit exceed</mat-error>
+            <mat-error *ngIf="hasError('City', 'invalidHardCodedConstant')">Invalid Constant, should be alphabet,
+              lowercase, no space</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <input matInput type="text" placeholder="Ex. Short description of the type" formControlName="description">
+        </mat-form-field>
+      </div>
+
+
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>Father</mat-label>
+          <mat-select formControlName="typeFather" [(ngModel)]="typeFatherSelected">
+            <mat-option>
+            </mat-option>
+            <mat-option *ngFor="let val of types" [value]="val.id">{{val.description}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div> -->
+      </div>
+
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button>
+  </mat-dialog-actions>
+</div>

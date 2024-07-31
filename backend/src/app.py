@@ -1,21 +1,27 @@
+from typing import Optional
 import json
+import math
+from datetime import datetime
 from typing import Dict
 
+import mongomock
 import uvicorn
-from bson import json_util
-from fastapi import FastAPI, Query
+from bson import ObjectId, json_util
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from pymongo import ASCENDING, MongoClient
 
 from db import (
     create_course,
     create_in_memory_mongodb,
     delete_course,
+    get_categories,
+    get_course,
+    get_categories_aggr,
     get_courses_paginated,
     update_course,
-    get_categories,
-    get_categories_aggr,
 )
 from filereader import data_factory
 from processdata import start_process
@@ -71,10 +77,17 @@ class CourseData(BaseModel):
     Price: float
 
 
-@app.get("/categories")
-async def categories():
+@app.get("/courses/autocomplete")
+async def autocomplete(
+    q: Optional[str] = Query(
+        "", alias="q", description="University name to filter categories"
+    ),
+    type: Optional[str] = Query(
+        "", alias="type", description="Type of categories to filter"
+    ),
+):
     """Get category mappings for specified columns."""
-    categories = get_categories_aggr()
+    categories = get_categories_aggr(q, type)
     categories_list = list(categories)
     categories_json = json.loads(json_util.dumps(categories_list))
     return JSONResponse(content=categories_json, status_code=200)
@@ -110,6 +123,19 @@ async def delete(course_id: str):
     """Delete a course."""
     deleted_count = delete_course(course_id)
     return JSONResponse(content={"deleted_count": deleted_count}, status_code=200)
+
+
+@app.get("/courses/{course_id}")
+async def get(course_id: str):
+    """API endpoint to get a course by its ID."""
+    try:
+        course = get_course(course_id)
+        courses_json = json.loads(json_util.dumps(course))
+        return JSONResponse(content=courses_json, status_code=200)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except HTTPException as e:
+        raise e
 
 
 if __name__ == "__main__":
