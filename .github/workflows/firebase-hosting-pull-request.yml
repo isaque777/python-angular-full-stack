@@ -25,12 +25,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Adjust the version as needed
+          node-version: '18'  # Adjust the version as needed
 
       - name: Install dependencies and build
         run: |
           cd ui  # Navigate to the ui directory
-          npm ci --force --legacy-peer-deps
+          npm i --legacy-peer-deps
           npm run build -- --configuration production
 
       - name: Deploy to Firebase Hosting
