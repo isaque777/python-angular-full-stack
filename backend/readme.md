@@ -44,6 +44,15 @@ This project is a FastAPI-based RESTful API for managing university courses. The
     uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     ```
 
+2. **Remote Api**
+    https://corresponding-dorolisa-krig777-68af53b5.koyeb.app/courses
+
+
+# Adcore Exam
+
+This project consists of both backend and frontend packages.
+
+Click on the link for more information.
 
 ## API Endpoints
 
@@ -79,6 +88,7 @@ This project is a FastAPI-based RESTful API for managing university courses. The
 - **Query Parameters**:
     - `page`: The page number (default is 1)
     - `page_size`: The number of items per page (default is 10)
+    - `q`: (Optional) University name to filter courses
 - **Response**:
     ```json
     [
@@ -127,41 +137,28 @@ This project is a FastAPI-based RESTful API for managing university courses. The
     }
     ```
 
-## Directory Structure
+### Get Course by ID
 
-```
-university-courses-api/
-│
-├── static/
-│   └── UniversitySchema.csv        # Sample CSV file with course data
-│
-├── src/
-│   ├── app.py                      # Main App File 
-│   ├── db.py                       # Database operations
-│   ├── app.py                      # FastAPI endpoints
-│   └── processdata.py              # Data processing and threading logic
-│
-├── requirements.txt                # Python package dependencies
-├── README.md                       # Project documentation
-└── main.py                         # Entry point to start the FastAPI server
-```
+- **URL**: `/courses/{course_id}`
+- **Method**: `GET`
+- **Response**:
+    ```json
+    {
+        "_id": "60b8d295fe2b4f9a3c5d9f84",
+        "University": "Example University",
+        "City": "Example City",
+        "Country": "Example Country",
+        "CourseName": "Example Course",
+        "CourseDescription": "Example Description",
+        "Currency": "USD",
+        "StartDate": "2023-09-01T00:00:00Z",
+        "EndDate": "2023-12-01T00:00:00Z",
+        "Price": 1000.0,
+        "createdAt": "2023-06-02T18:00:00Z"
+    }
+    ```
 
-## Contributing
 
-1. **Fork the repository**.
-2. **Create a new branch**:
-    ```bash
-    git checkout -b feature/your-feature-name
-    ```
-3. **Commit your changes**:
-    ```bash
-    git commit -m 'Add some feature'
-    ```
-4. **Push to the branch**:
-    ```bash
-    git push origin feature/your-feature-name
-    ```
-5. **Create a new Pull Request**.
 
 ## License
 

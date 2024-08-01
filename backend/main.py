@@ -30,7 +30,7 @@ def startup_event():
     """Function to run on application startup."""
     print("Application startup")
 
-    expire_after_seconds = 100
+    expire_after_seconds = 600
     # Create in-memory MongoDB
     create_in_memory_mongodb(expire_after_seconds)
 
