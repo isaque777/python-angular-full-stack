@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies and build
         run: |
           cd ui  # Navigate to the ui directory
-          npm ci --force --legacy-peer-deps
+          npm i --legacy-peer-deps
           npm run build -- --configuration production
 
       - name: Deploy to Firebase Hosting
