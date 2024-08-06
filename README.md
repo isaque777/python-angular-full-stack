@@ -1,4 +1,8 @@
-# Fullstack app
+Here's an improved version of your markdown with the link:
+
+# Fullstack App
+
+[App Preview](https://adcore-exam.web.app/)
 
 This project includes both backend and frontend components, showcasing a full-stack application using Python for the backend and Angular for the frontend.
 
